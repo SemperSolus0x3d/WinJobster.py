@@ -1,9 +1,14 @@
 import ctypes as c
 import functools
+import typing
+
 from WinJobsterLoader import WinJobsterLoader
 
 
-def _cleanup_on_fail(func):
+_F = typing.TypeVar('_F', bound=typing.Callable[..., typing.Any])
+
+
+def _cleanup_on_fail(func: _F) -> _F:
 
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
