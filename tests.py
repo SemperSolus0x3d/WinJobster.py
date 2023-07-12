@@ -1,4 +1,6 @@
+import os.path
 import unittest
+from pathlib import Path
 
 from Process import Process
 from WinJobsterCallFailedException import WinJobsterCallFailedException
@@ -19,6 +21,22 @@ class RunStopApp(unittest.TestCase):
         cmdline = self.EXISTING_APP_PATH
         process = self.process
         process.start(cmdline)
+        self.assertTrue(process.is_alive)
+        process.kill()
+        self.assertFalse(process.is_alive)
+
+    def test_run_and_stop_with_path(self):
+        cmdline = Path(self.EXISTING_APP_PATH)
+        process = self.process
+        process.start(cmdline)
+        self.assertTrue(process.is_alive)
+        process.kill()
+        self.assertFalse(process.is_alive)
+
+    def test_run_and_stop_in_base_dir(self):
+        cmdline = self.EXISTING_APP_PATH
+        process = self.process
+        process.start_in_base_dir(cmdline)
         self.assertTrue(process.is_alive)
         process.kill()
         self.assertFalse(process.is_alive)

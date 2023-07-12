@@ -1,6 +1,7 @@
 import ctypes as c
 import functools
 import typing
+from pathlib import Path
 
 from WinJobsterLoader import WinJobsterLoader
 
@@ -27,8 +28,15 @@ class Process:
     def __init__(self):
         self._handle = None
 
+    def start_in_base_dir(self, cmdline: str | Path):
+        cmdline = Path(cmdline)
+        self.start(cmdline, cmdline.parent)
+
     @_cleanup_on_fail
-    def start(self, cmdline: str, working_directory: str | None = None):
+    def start(self, cmdline: str | Path, working_directory: str | Path | None = None):
+        cmdline = str(cmdline)
+        if working_directory:
+            working_directory = str(working_directory)
         try:
             self._handle = c.c_void_p(None)
 
