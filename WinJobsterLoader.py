@@ -1,6 +1,7 @@
 import platform
 import ctypes as c
-from WinJobsterCallFailedException import WinJobsterCallFailedException
+from WinJobsterCallFailedException import WinJobsterCallFailedException, ErrorCode
+
 
 class WinJobsterLoader:
     def load(self) -> c.WinDLL:
@@ -30,5 +31,5 @@ class WinJobsterLoader:
 
     @staticmethod
     def _errcheck(result, func, arguments):
-        if result != 0:
+        if result != ErrorCode.Success:
             raise WinJobsterCallFailedException(result)
