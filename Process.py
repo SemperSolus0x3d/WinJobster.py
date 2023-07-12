@@ -35,18 +35,13 @@ class Process:
     @_cleanup_on_fail
     def start(self, cmdline: str | Path, working_directory: str | Path | None = None):
         cmdline = str(cmdline)
-        if working_directory:
+        if working_directory is not None:
             working_directory = str(working_directory)
-        try:
-            self._handle = c.c_void_p(None)
-
-            self._library.StartProcess(
-                cmdline,
-                working_directory,
-                c.byref(self._handle))
-        except:
-            self._cleanup()
-            raise
+        self._handle = c.c_void_p(None)
+        self._library.StartProcess(
+            cmdline,
+            working_directory,
+            c.byref(self._handle))
 
     @property
     @_cleanup_on_fail
