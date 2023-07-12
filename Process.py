@@ -29,16 +29,12 @@ class Process:
 
     @_cleanup_on_fail
     def start(self, cmdline: str, working_directory: str | None = None):
-        try:
-            self._handle = c.c_void_p(None)
+        self._handle = c.c_void_p(None)
 
-            self._library.StartProcess(
-                cmdline,
-                working_directory,
-                c.byref(self._handle))
-        except:
-            self._cleanup()
-            raise
+        self._library.StartProcess(
+            cmdline,
+            working_directory,
+            c.byref(self._handle))
 
     @property
     @_cleanup_on_fail
