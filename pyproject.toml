@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "WinJobster"
+authors = [
+    {name = "MaxBQb"},
+    {name = "SemperSolus0x3d"},
+]
+version="1.0.0"
+description = "My package description"
+#readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["one", "two"]
+license = {text = "GPL-3.0 license"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+[tool.setuptools.package-data]
+"*" = ["*.dll"]

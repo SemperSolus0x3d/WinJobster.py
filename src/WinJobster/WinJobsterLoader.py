@@ -1,14 +1,25 @@
 import platform
 import ctypes as c
-from WinJobsterCallFailedException import WinJobsterCallFailedException, ErrorCode
+from importlib.resources import files, as_file
+
+from .WinJobsterCallFailedException import WinJobsterCallFailedException, ErrorCode
 
 
 class WinJobsterLoader:
-    def load(self) -> c.WinDLL:
+    @property
+    def filename(self):
+        name = "WinJobster-{}.dll"
         if platform.architecture()[0] == '64bit':
-            lib = c.WinDLL('./libs/WinJobster-x64.dll')
-        else:
-            lib = c.WinDLL('./libs/WinJobster-x86.dll')
+            return name.format("x64")
+        return name.format("x86")
+
+    @property
+    def file_path(self):
+        return files("libs").joinpath(self.filename)
+
+    def load(self) -> c.WinDLL:
+        with self.file_path as path:
+            lib = c.WinDLL(str(path))
 
         lib.StartProcess.restype = c.c_uint32
         lib.StartProcess.errcheck = WinJobsterLoader._errcheck

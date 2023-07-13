@@ -3,7 +3,7 @@ import functools
 import typing
 from pathlib import Path
 
-from WinJobsterLoader import WinJobsterLoader
+from .WinJobsterLoader import WinJobsterLoader
 
 
 _F = typing.TypeVar('_F', bound=typing.Callable[..., typing.Any])
