@@ -1,6 +1,16 @@
 import platform
 import ctypes as c
-from importlib.resources import files, as_file
+import sys
+from pathlib import Path
+
+if sys.version_info < (3, 10, 0):
+    import pkg_resources
+
+    def files(path: str):
+        return Path(pkg_resources.resource_filename(__name__, "..")).joinpath(path)
+else:
+    from importlib.resources import files
+
 
 from .WinJobsterCallFailedException import WinJobsterCallFailedException, ErrorCode
 
