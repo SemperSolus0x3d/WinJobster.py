@@ -1,5 +1,6 @@
 import platform
 import ctypes as c
+from pathlib import Path
 
 try:
     from importlib_resources import files
@@ -7,7 +8,11 @@ except ImportError:
     try:
         from importlib.resources import files
     except ImportError:
-        from importlib_resources import files
+        import pkg_resources
+
+        def files(path: str):
+            return Path(pkg_resources.resource_filename(__name__, path))
+
 
 from .WinJobsterCallFailedException import WinJobsterCallFailedException, ErrorCode
 
