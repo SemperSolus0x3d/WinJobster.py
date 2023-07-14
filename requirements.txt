@@ -1,2 +1,1 @@
-importlib_resources; python_version < "3.7"
-pathlib2; python_version <= "2.7"
+importlib_resources; python_version <= "3.9"

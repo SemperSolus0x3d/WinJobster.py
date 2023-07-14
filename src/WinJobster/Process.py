@@ -1,10 +1,7 @@
 import ctypes as c
 import functools
 import typing
-try:
-    from pathlib import Path
-except ImportError:
-    from pathlib2 import Path
+from pathlib import Path
 
 from .WinJobsterLoader import WinJobsterLoader
 
