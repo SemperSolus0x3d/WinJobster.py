@@ -7,7 +7,7 @@ if sys.version_info < (3, 10, 0):
     import pkg_resources
 
     def files(path: str):
-        return Path(pkg_resources.resource_dir(__name__)).joinpath(path)
+        return Path(pkg_resources.resource_filename(__name__, "..")).joinpath(path)
 else:
     from importlib.resources import files
 
