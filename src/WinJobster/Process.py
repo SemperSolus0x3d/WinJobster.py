@@ -23,10 +23,16 @@ def _cleanup_on_fail(func: _F) -> _F:
 
 
 class Process:
-    _library = WinJobsterLoader().load()
+    _library = None
+
+    @classmethod
+    def _init(cls):
+        if cls._library is None:
+            cls._library = WinJobsterLoader().load()
 
     def __init__(self):
         self._handle = None
+        self._init()
 
     def start_in_base_dir(self, cmdline: str | Path):
         cmdline = Path(cmdline)
