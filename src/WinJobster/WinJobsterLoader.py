@@ -1,6 +1,10 @@
 import platform
 import ctypes as c
-from importlib.resources import files, as_file
+
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
 
 from .WinJobsterCallFailedException import WinJobsterCallFailedException, ErrorCode
 

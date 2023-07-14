@@ -8,10 +8,10 @@ authors = [
     {name = "MaxBQb"},
     {name = "SemperSolus0x3d"},
 ]
-dynamic=["version"]
+dynamic=["version", "dependencies"]
 description = "My package description"
 #readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=2.7"
 keywords = ["one", "two"]
 license = {text = "GPL-3.0 license"}
 classifiers = [
@@ -21,3 +21,4 @@ classifiers = [
 "*" = ["*.dll"]
 [tool.setuptools.dynamic]
 version = {attr = "WinJobster.__version__"}
+dependencies = {file = ["requirements.txt"]}

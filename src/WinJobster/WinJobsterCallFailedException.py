@@ -28,15 +28,15 @@ class WinJobsterCallFailedException(Exception):
         self.error_code_value = error_code
         self.error_code = ErrorCode.of(error_code)
         self.message = self.get_error_message()
-        super().__init__(self.message, self.error_code, self.error_code_value)
+        super(WinJobsterCallFailedException, self).__init__(self.message, self.error_code, self.error_code_value)
 
     def get_error_message(self):
         if self.error_code == ErrorCode.Success:
             return "WinJobster call succeeded"
 
         if self.error_code is None:
-            message = f"UnknownError({self.error_code_value})"
+            message = "UnknownError({})".format(self.error_code_value)
         else:
             message = self.error_code.message
 
-        return f"WinJobster call failed: '{message}'"
+        return "WinJobster call failed: '{}'".format(message)

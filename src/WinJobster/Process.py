@@ -1,7 +1,10 @@
 import ctypes as c
 import functools
 import typing
-from pathlib import Path
+try:
+    from pathlib import Path
+except ImportError:
+    from pathlib2 import Path
 
 from .WinJobsterLoader import WinJobsterLoader
 
@@ -34,12 +37,12 @@ class Process:
         self._handle = None
         self._init()
 
-    def start_in_base_dir(self, cmdline: str | Path):
+    def start_in_base_dir(self, cmdline: typing.Union[str, Path]):
         cmdline = Path(cmdline)
         self.start(cmdline, cmdline.parent)
 
     @_cleanup_on_fail
-    def start(self, cmdline: str | Path, working_directory: str | Path | None = None):
+    def start(self, cmdline: typing.Union[str, Path], working_directory: typing.Union[str, Path, None] = None):
         cmdline = str(cmdline)
         if working_directory is not None:
             working_directory = str(working_directory)

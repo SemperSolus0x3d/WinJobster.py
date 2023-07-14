@@ -4,4 +4,4 @@
 __version_info__ = (1, 0, 0, None)  # None for stable release
 __version__ = '.'.join(map(str, __version_info__[:-1]))
 if __version_info__[-1] is not None:
-    __version__ += f'-{__version_info__[-1]}'
+    __version__ += '-' + __version_info__[-1]
