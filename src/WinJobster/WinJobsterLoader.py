@@ -1,17 +1,15 @@
 import platform
 import ctypes as c
+import sys
 from pathlib import Path
 
-try:
-    from importlib_resources import files
-except ImportError:
-    try:
-        from importlib.resources import files
-    except ImportError:
-        import pkg_resources
+if sys.version_info < (3, 10, 0):
+    import pkg_resources
 
-        def files(path: str):
-            return Path(pkg_resources.resource_filename(__name__, path))
+    def files(path: str):
+        return Path(pkg_resources.resource_dir(__name__)).joinpath(path)
+else:
+    from importlib.resources import files
 
 
 from .WinJobsterCallFailedException import WinJobsterCallFailedException, ErrorCode
