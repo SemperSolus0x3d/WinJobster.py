@@ -1,9 +1,7 @@
-import os.path
 import unittest
 from pathlib import Path
 
-from Process import Process
-from WinJobsterCallFailedException import WinJobsterCallFailedException
+from WinJobster import Process, WinJobsterCallFailedException
 
 
 class RunStopApp(unittest.TestCase):
