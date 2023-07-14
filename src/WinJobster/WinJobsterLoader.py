@@ -4,7 +4,10 @@ import ctypes as c
 try:
     from importlib_resources import files
 except ImportError:
-    from importlib.resources import files
+    try:
+        from importlib.resources import files
+    except ImportError:
+        from importlib_resources import files
 
 from .WinJobsterCallFailedException import WinJobsterCallFailedException, ErrorCode
 
