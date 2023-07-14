@@ -18,8 +18,7 @@ class WinJobsterLoader:
         return files("libs").joinpath(self.filename)
 
     def load(self) -> c.WinDLL:
-        with self.file_path as path:
-            lib = c.WinDLL(str(path))
+        lib = c.WinDLL(str(self.file_path))
 
         lib.StartProcess.restype = c.c_uint32
         lib.StartProcess.errcheck = WinJobsterLoader._errcheck
