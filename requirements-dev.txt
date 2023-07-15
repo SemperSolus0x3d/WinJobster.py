@@ -1,1 +1,1 @@
-github-release-downloader~=1
+github-release-downloader==1.*
