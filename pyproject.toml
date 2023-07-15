@@ -27,6 +27,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Operating System :: Microsoft :: Windows",
 ]
+[project.urls]
+"Homepage" = "https://github.com/SemperSolus0x3d/WinJobster.py"
+"Bug Tracker" = "https://github.com/SemperSolus0x3d/WinJobster.py/issues"
 [tool.setuptools.package-data]
 "*" = ["*.dll"]
 [tool.setuptools.dynamic]
