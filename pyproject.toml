@@ -25,5 +25,5 @@ classifiers = [
 [tool.setuptools.package-data]
 "*" = ["*.dll"]
 [tool.setuptools.dynamic]
-version = {attr = "WinJobster.__version__"}
+version = {attr = "WinJobster._meta.__version__"}
 dependencies = {file = ["requirements.txt"]}

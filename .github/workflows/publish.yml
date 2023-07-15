@@ -13,7 +13,7 @@ on:
     types: [published]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   deploy:
@@ -32,9 +32,9 @@ jobs:
         pip install build -r requirements-dev.txt
     - name: Download WinJobster.cpp DLLs
       run: |
-        cd src\libs;
+        cd ./src/libs;
         python -m get_dlls;
-        cd ..\..;
+        cd ../..;
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Build package
@@ -44,3 +44,18 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
+    - name: Get release
+      if: failure()
+      id: get_release
+      uses: bruceadams/get-release@v1.3.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Rollback Release
+      if: failure()
+      uses: author/action-rollback@stable
+      with:
+        release_id: ${{ steps.get_release.outputs.id }}
+        tag: ${{ github.ref_name }}
+        delete_orphan_tag: true
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
