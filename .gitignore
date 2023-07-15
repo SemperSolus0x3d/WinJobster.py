@@ -322,5 +322,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm+all,python,visualstudiocode,windows,venv
-src/WinJobster/libs/*.dll
-src/WinJobster/libs/*.cache
+src\libs\*.dll
+src\libs\*.cache

@@ -31,9 +31,9 @@ jobs:
         python -m pip install flake8 pytest -r requirements.txt -r requirements-dev.txt
     - name: Download WinJobster.cpp DLLs
       run: |
-        cd src\WinJobster\libs;
+        cd src\libs;
         python -m get_dlls;
-        cd ..\..\..;
+        cd ..\..;
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Install current package
