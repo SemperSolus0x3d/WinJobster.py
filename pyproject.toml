@@ -9,10 +9,10 @@ authors = [
     {name = "SemperSolus0x3d"},
 ]
 dynamic=["version", "dependencies"]
-description = "My package description"
-#readme = "README.md"
+description = "WinJobster is a library, which can start processes in a Windows job, monitor their state (dead or alive) and kill them all at once, including their children, children of their children... you know where I'm going..."
+readme = "README.md"
 requires-python = ">=3.7"
-keywords = ["one", "two"]
+keywords = ["windows", "windows-jobs", "winapi", "process", "process-groups"]
 license = {text = "GPL-3.0 license"}
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -21,6 +21,11 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: Microsoft :: Windows",
 ]
 [tool.setuptools.package-data]
 "*" = ["*.dll"]
