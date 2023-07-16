@@ -16,6 +16,8 @@ from .exceptions import CallFailedException, ErrorCode
 
 
 class LibLoader:
+    _common_lib = None
+
     @property
     def filename(self):
         name = "WinJobster-{}.dll"
@@ -27,7 +29,10 @@ class LibLoader:
     def file_path(self):
         return files("libs").joinpath(self.filename)
 
-    def load(self) -> c.WinDLL:
+    def load(self, new_instance=False) -> c.WinDLL:
+        if self.__class__._common_lib is not None and not new_instance:
+            return self.__class__._common_lib
+
         lib = c.WinDLL(str(self.file_path))
 
         lib.StartProcess.restype = c.c_uint32
@@ -47,6 +52,7 @@ class LibLoader:
         lib.Cleanup.restype = None
         lib.Cleanup.argtypes = [c.c_void_p]
 
+        self.__class__._common_lib = lib
         return lib
 
     @staticmethod
