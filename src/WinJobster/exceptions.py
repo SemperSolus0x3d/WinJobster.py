@@ -7,6 +7,7 @@ class ErrorCode(IntEnum):
     CompletionPortCreationFailed = 2
     FailedToAssociateJobWithCompletionPort = 3
     ProcessCreationFailed = 4
+    QueryJobObjectInformationFailed = 5
 
     @classmethod
     def of(cls, code: int):
@@ -21,7 +22,7 @@ class ErrorCode(IntEnum):
         return self.name
 
 
-class WinJobsterCallFailedException(Exception):
+class CallFailedException(Exception):
     ERROR_CODES = tuple(ErrorCode)
 
     def __init__(self, error_code):
