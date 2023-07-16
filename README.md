@@ -27,4 +27,8 @@ process.kill()  # Will close original app and everything which was started by it
 > to avoid this use `start_in_base_dir` method or set working directory explicitly in `start`
 
 > `process.start`'s first argument can be path, 
-> or any string interpreted as console input (Windows will expand path for you) 
+> or any string interpreted as console input (Windows will expand path for you)
+
+## Is it Stable?
+No. We're planning to make breaking changes soon.
+You still able to use current version, but next release will be incompatable with it.
