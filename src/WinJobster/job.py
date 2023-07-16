@@ -1,5 +1,6 @@
 import ctypes as c
 import shutil
+import typing
 from pathlib import Path
 from typing import Optional, Union
 
@@ -72,7 +73,7 @@ class Job:
         self._handle = self._library.CreateJob()
 
     @property
-    def process_ids(self) -> set[int]:
+    def process_ids(self) -> typing.Set[int]:
         if self._handle is None:
             return set()
 
