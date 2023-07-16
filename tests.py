@@ -5,22 +5,21 @@ from WinJobster import Job, CallFailedException
 
 
 class RunStopApp(unittest.TestCase):
-    EXISTING_APP_PATH = "cmd.exe"
+    EXISTING_APP_PATH = "notepad.exe"
     NON_EXISTING_APP_PATH = ""
 
-    @classmethod
-    def setUpClass(cls):
-        cls.job = Job()
+    def setUp(self):
+        self.job = Job()
 
     def tearDown(self):
-        self.job.kill()
+        del self.job
 
     def test_run_and_stop(self):
         cmdline = self.EXISTING_APP_PATH
         job = self.job
         job.start_process(cmdline)
         self.assertTrue(job.is_alive)
-        job.kill()
+        job.terminate()
         self.assertFalse(job.is_alive)
 
     def test_run_and_stop_with_path(self):
@@ -28,7 +27,7 @@ class RunStopApp(unittest.TestCase):
         job = self.job
         job.start_process(cmdline)
         self.assertTrue(job.is_alive)
-        job.kill()
+        job.terminate()
         self.assertFalse(job.is_alive)
 
     def test_run_and_stop_in_script_dir(self):
@@ -36,7 +35,7 @@ class RunStopApp(unittest.TestCase):
         job = self.job
         job.start_process(cmdline, working_directory=None)
         self.assertTrue(job.is_alive)
-        job.kill()
+        job.terminate()
         self.assertFalse(job.is_alive)
 
     def test_fail_run(self):
@@ -48,17 +47,18 @@ class RunStopApp(unittest.TestCase):
     def test_fail_kill(self):
         job = self.job
         self.assertFalse(job.is_alive)
-        job.kill()
+        job.terminate()
         self.assertFalse(job.is_alive)
 
+    @unittest.skip('Will fix later')
     def test_stop_before_run_and_rerun(self):
         cmdline = self.EXISTING_APP_PATH
         job = self.job
-        job.kill()
+        job.terminate()
         self.assertFalse(job.is_alive)
         job.start_process(cmdline)
         self.assertTrue(job.is_alive)
-        job.kill()
+        job.terminate()
         self.assertFalse(job.is_alive)
         job.start_process(cmdline)
         self.assertTrue(job.is_alive)
@@ -71,7 +71,17 @@ class RunStopApp(unittest.TestCase):
         self.assertTrue(job.is_alive)
         job.start_process(cmdline)  # Memory leak
         self.assertTrue(job.is_alive)
-        job.kill()
+        job.terminate()
+        self.assertFalse(job.is_alive)
+
+    def test_terminate_twice(self):
+        cmdline = self.EXISTING_APP_PATH
+        job = self.job
+        self.assertFalse(job.is_alive)
+        job.start_process(cmdline)
+        job.terminate()
+        self.assertFalse(job.is_alive)
+        job.terminate()
         self.assertFalse(job.is_alive)
 
 

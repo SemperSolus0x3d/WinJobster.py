@@ -14,6 +14,27 @@ else:
 
 from .exceptions import CallFailedException, ErrorCode
 
+def _errcheck(result, func, arguments):
+    if result != ErrorCode.Success:
+        raise CallFailedException(result)
+
+c_error_code = c.c_uint32
+c_uint64_p = c.POINTER(c.c_uint64)
+c_uint64_pp = c.POINTER(c_uint64_p)
+c_size_t_p = c.POINTER(c.c_size_t)
+
+_SIGNATURES = [
+    # Name             Return type    Error check  [Args...]
+    ('CreateJob',      c.c_void_p,    None,        []),
+    ('StartProcess',   c_error_code,  _errcheck,   [c.c_wchar_p, c.c_wchar_p, c.c_void_p]),
+    ('IsAlive',        c.c_bool,      None,        [c.c_void_p]),
+    ('Kill',           None,          None,        [c.c_void_p]),
+    ('Terminate',      c_error_code,  _errcheck,   [c.c_void_p]),
+    ('DestroyJob',     None,          None,        [c.c_void_p]),
+    ('FreeMemory',     None,          None,        [c.c_void_p]),
+    ('GetProcessIds',  c_error_code,  _errcheck,   [c.c_void_p, c_uint64_pp, c_size_t_p]),
+]
+
 
 class LibLoader:
     _common_lib = None
@@ -35,27 +56,17 @@ class LibLoader:
 
         lib = c.WinDLL(str(self.file_path))
 
-        lib.StartProcess.restype = c.c_uint32
-        lib.StartProcess.errcheck = LibLoader._errcheck
-        lib.StartProcess.argtypes = [
-            c.c_wchar_p,
-            c.c_wchar_p,
-            c.POINTER(c.c_void_p)
-        ]
+        for signature in _SIGNATURES:
+            name, returnType, errorCheck, args = signature
 
-        lib.IsAlive.restype = c.c_bool
-        lib.IsAlive.argtypes = [c.c_void_p]
+            func = getattr(lib, name)
 
-        lib.Kill.restype = None
-        lib.Kill.argtypes = [c.c_void_p]
+            func.restype = returnType
+            func.argtypes = args
 
-        lib.Cleanup.restype = None
-        lib.Cleanup.argtypes = [c.c_void_p]
+            if errorCheck is not None:
+                func.errcheck = errorCheck
 
         self.__class__._common_lib = lib
         return lib
 
-    @staticmethod
-    def _errcheck(result, func, arguments):
-        if result != ErrorCode.Success:
-            raise CallFailedException(result)

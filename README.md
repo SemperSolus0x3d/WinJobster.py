@@ -21,7 +21,7 @@ job = WinJobster.Job()
 print(job.is_alive)  # False, no alive processes found
 job.start_process(cmdline)
 print(job.is_alive)  # True, 1 alive process found
-job.kill()  # Will close original app and everything which was started by it
+job.terminate()  # Will close original app and everything which was started by it
 ```
 
 > `job.start_process`' first argument can be path, 

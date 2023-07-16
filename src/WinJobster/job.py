@@ -8,22 +8,6 @@ from pathlib import Path
 from .loader import LibLoader
 
 
-_F = typing.TypeVar('_F', bound=Callable[..., typing.Any])
-
-
-def _cleanup_on_fail(func: _F) -> _F:
-
-    @functools.wraps(func)
-    def wrapper(self, *args, **kwargs):
-        try:
-            return func(self, *args, **kwargs)
-        except:
-            self._cleanup()
-            raise
-
-    return wrapper
-
-
 class Job:
     _library = None
 
@@ -38,8 +22,8 @@ class Job:
             cls._library = LibLoader().load()
 
     def __init__(self):
-        self._handle = None
         self._init()
+        self._handle = self._library.CreateJob()
 
     def start_process(
         self,
@@ -62,33 +46,52 @@ class Job:
 
         self._start_process(cmdline, working_directory)
 
-    @_cleanup_on_fail
+
     def _start_process(self, cmdline: str, working_directory: Optional[str] = None):
-        self._handle = c.c_void_p(None)
         self._library.StartProcess(
             cmdline,
             working_directory,
-            c.byref(self._handle),
+            self._handle,
         )
 
     @property
-    @_cleanup_on_fail
     def is_alive(self) -> bool:
         if self._handle is None:
             return False
 
         return self._library.IsAlive(self._handle)
 
-    @_cleanup_on_fail
-    def kill(self):
+
+    def terminate(self, gracefully=True):
         if self._handle is None:
             return
 
-        self._library.Kill(self._handle)
+        if gracefully:
+            self._library.Terminate(self._handle)
+        else:
+            self._library.Kill(self._handle)
+
+
+    @property
+    def process_ids(self) -> set[int]:
+        if self._handle is None:
+            return set()
+        
+        ids = c.POINTER(c.c_uint64)()
+        size = c.c_size_t
+
+        self._library.GetProcessIds(self._handle, c.byref(ids), c.byref(size))
+
+        result = { int(ids[i]) for i in range(size) }
+
+        self._library.FreeMemory(ids)
+
+        return result
+
 
     def _cleanup(self):
         if self._handle is not None:
-            self._library.Cleanup(self._handle)
+            self._library.DestroyJob(self._handle)
             self._handle = None
 
     def __del__(self):
