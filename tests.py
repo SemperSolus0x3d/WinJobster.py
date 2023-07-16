@@ -22,6 +22,27 @@ class RunStopApp(unittest.TestCase):
         job.terminate()
         self.assertFalse(job.is_alive)
 
+    def test_count_processes(self):
+        cmdline = self.EXISTING_APP_PATH
+        job = self.job
+        self.assertEquals(0, len(job.process_ids))
+        job.start_process(cmdline)
+        self.assertEquals(1, len(job.process_ids))
+        job.start_process(cmdline)
+        self.assertEquals(2, len(job.process_ids))
+        job.terminate()
+        self.assertEquals(0, len(job.process_ids))
+
+    def test_existing_processes_used(self):
+        cmdline = self.EXISTING_APP_PATH
+        job = self.job
+        job.start_process(cmdline)
+        job.start_process(cmdline)
+        job.start_process(cmdline)
+        self.assertEquals(3, len(job.process_ids))
+        for pid in job.process_ids:
+            self.assertNotEquals(0, len(job.process_ids))
+
     def test_run_and_stop_with_path(self):
         cmdline = Path(self.EXISTING_APP_PATH)
         job = self.job
@@ -50,7 +71,7 @@ class RunStopApp(unittest.TestCase):
         job.terminate()
         self.assertFalse(job.is_alive)
 
-    @unittest.skip('Will fix later')
+    # @unittest.skip('Will fix later')  # Dirty-patched, TODO: Fix properly
     def test_stop_before_run_and_rerun(self):
         cmdline = self.EXISTING_APP_PATH
         job = self.job
@@ -69,7 +90,7 @@ class RunStopApp(unittest.TestCase):
         self.assertFalse(job.is_alive)
         job.start_process(cmdline)
         self.assertTrue(job.is_alive)
-        job.start_process(cmdline)  # Memory leak
+        job.start_process(cmdline)
         self.assertTrue(job.is_alive)
         job.terminate()
         self.assertFalse(job.is_alive)

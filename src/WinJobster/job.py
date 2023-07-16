@@ -1,9 +1,7 @@
 import ctypes as c
-import functools
 import shutil
-import typing
-from typing import Optional, Union, Callable
 from pathlib import Path
+from typing import Optional, Union
 
 from .loader import LibLoader
 
@@ -27,9 +25,9 @@ class Job:
 
     def start_process(
         self,
-        path: typing.Union[str, Path],
+        path: Union[str, Path],
         call_params: str = "",
-        working_directory: typing.Union[str, Path, AppLocal, None] = APP_LOCAL,
+        working_directory: Union[str, Path, AppLocal, None] = APP_LOCAL,
     ):
         if isinstance(working_directory, Job.AppLocal):
             resolved_path = shutil.which(str(path))
@@ -46,7 +44,6 @@ class Job:
 
         self._start_process(cmdline, working_directory)
 
-
     def _start_process(self, cmdline: str, working_directory: Optional[str] = None):
         self._library.StartProcess(
             cmdline,
@@ -61,7 +58,6 @@ class Job:
 
         return self._library.IsAlive(self._handle)
 
-
     def terminate(self, gracefully=True):
         if self._handle is None:
             return
@@ -71,23 +67,24 @@ class Job:
         else:
             self._library.Kill(self._handle)
 
+        # TODO: This part should be moved to CPP library
+        self._cleanup()
+        self._handle = self._library.CreateJob()
 
     @property
     def process_ids(self) -> set[int]:
         if self._handle is None:
             return set()
-        
+
         ids = c.POINTER(c.c_uint64)()
-        size = c.c_size_t
+        size = c.c_size_t()
 
         self._library.GetProcessIds(self._handle, c.byref(ids), c.byref(size))
 
-        result = { int(ids[i]) for i in range(size) }
+        result = {int(ids[i]) for i in range(size.value)}
 
         self._library.FreeMemory(ids)
-
         return result
-
 
     def _cleanup(self):
         if self._handle is not None:
