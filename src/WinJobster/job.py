@@ -1,12 +1,14 @@
 import ctypes as c
 import functools
+import shutil
 import typing
+from typing import Optional, Union, Callable
 from pathlib import Path
 
-from .WinJobsterLoader import WinJobsterLoader
+from .loader import LibLoader
 
 
-_F = typing.TypeVar('_F', bound=typing.Callable[..., typing.Any])
+_F = typing.TypeVar('_F', bound=Callable[..., typing.Any])
 
 
 def _cleanup_on_fail(func: _F) -> _F:
@@ -22,32 +24,52 @@ def _cleanup_on_fail(func: _F) -> _F:
     return wrapper
 
 
-class Process:
+class Job:
     _library = None
+
+    class AppLocal:
+        pass
+
+    APP_LOCAL = AppLocal()
 
     @classmethod
     def _init(cls):
         if cls._library is None:
-            cls._library = WinJobsterLoader().load()
+            cls._library = LibLoader().load()
 
     def __init__(self):
         self._handle = None
         self._init()
 
-    def start_in_base_dir(self, cmdline: typing.Union[str, Path]):
-        cmdline = Path(cmdline)
-        self.start(cmdline, cmdline.parent)
+    def start_process(
+        self,
+        path: typing.Union[str, Path],
+        call_params: str = "",
+        working_directory: typing.Union[str, Path, AppLocal, None] = APP_LOCAL,
+    ):
+        if isinstance(working_directory, Job.AppLocal):
+            resolved_path = shutil.which(str(path))
+            if resolved_path is None:
+                resolved_path = path
+            working_directory = Path(resolved_path).parent
 
-    @_cleanup_on_fail
-    def start(self, cmdline: typing.Union[str, Path], working_directory: typing.Union[str, Path, None] = None):
-        cmdline = str(cmdline)
+        cmdline = str(path)
+        if call_params:
+            cmdline += " " + call_params
+
         if working_directory is not None:
             working_directory = str(working_directory)
+
+        self._start_process(cmdline, working_directory)
+
+    @_cleanup_on_fail
+    def _start_process(self, cmdline: str, working_directory: Optional[str] = None):
         self._handle = c.c_void_p(None)
         self._library.StartProcess(
             cmdline,
             working_directory,
-            c.byref(self._handle))
+            c.byref(self._handle),
+        )
 
     @property
     @_cleanup_on_fail

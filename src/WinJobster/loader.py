@@ -12,10 +12,10 @@ else:
     from importlib.resources import files
 
 
-from .WinJobsterCallFailedException import WinJobsterCallFailedException, ErrorCode
+from .exceptions import CallFailedException, ErrorCode
 
 
-class WinJobsterLoader:
+class LibLoader:
     @property
     def filename(self):
         name = "WinJobster-{}.dll"
@@ -31,7 +31,7 @@ class WinJobsterLoader:
         lib = c.WinDLL(str(self.file_path))
 
         lib.StartProcess.restype = c.c_uint32
-        lib.StartProcess.errcheck = WinJobsterLoader._errcheck
+        lib.StartProcess.errcheck = LibLoader._errcheck
         lib.StartProcess.argtypes = [
             c.c_wchar_p,
             c.c_wchar_p,
@@ -52,4 +52,4 @@ class WinJobsterLoader:
     @staticmethod
     def _errcheck(result, func, arguments):
         if result != ErrorCode.Success:
-            raise WinJobsterCallFailedException(result)
+            raise CallFailedException(result)

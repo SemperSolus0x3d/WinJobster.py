@@ -12,23 +12,21 @@ pip install WinJobster
 ```
 
 ## Usage
+
 ```py
 import WinJobster
 
-
 cmdline = "notepad.exe"  # Path to any app, which can also start other app
-process = WinJobster.Process()
-process.start(cmdline)
-print(process.is_alive)  # True
-process.kill()  # Will close original app and everything which was started by it
+job = WinJobster.Job()
+print(job.is_alive)  # False, no alive processes found
+job.start_process(cmdline)
+print(job.is_alive)  # True, 1 alive process found
+job.kill()  # Will close original app and everything which was started by it
 ```
 
-> By default, script root dir will be used as working directory for any started app,
-> to avoid this use `start_in_base_dir` method or set working directory explicitly in `start`
-
-> `process.start`'s first argument can be path, 
-> or any string interpreted as console input (Windows will expand path for you)
+> `job.start_process`' first argument can be path, 
+> or any string interpreted as console input (Windows will expand %PATH% values for you)
 
 ## Is it Stable?
 No. We're planning to make breaking changes soon.
-You still able to use current version, but next release will be incompatable with it.
+You still able to use current version, but next release will be incompatible with it.

@@ -21,7 +21,7 @@ class ErrorCode(IntEnum):
         return self.name
 
 
-class WinJobsterCallFailedException(Exception):
+class CallFailedException(Exception):
     ERROR_CODES = tuple(ErrorCode)
 
     def __init__(self, error_code):
