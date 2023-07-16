@@ -26,7 +26,3 @@ job.terminate()  # Will close original app and everything which was started by i
 
 > `job.start_process`' first argument can be path, 
 > or any string interpreted as console input (Windows will expand %PATH% values for you)
-
-## Is it Stable?
-No. We're planning to make breaking changes soon.
-You still able to use current version, but next release will be incompatible with it.
