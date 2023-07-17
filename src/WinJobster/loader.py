@@ -29,10 +29,10 @@ c_size_t_p = c.POINTER(c.c_size_t)
 _SIGNATURES = [
     # Name             Return type    Error check  [Args...]
     ('CreateJob',      c.c_void_p,    None,        []),
-    ('StartProcess',   c_error_code,  _errcheck,   [c.c_wchar_p, c.c_wchar_p, c.c_void_p]),
+    ('StartProcess',   c_error_code,  _errcheck,   [c.c_void_p, c.c_wchar_p, c.c_wchar_p, c.c_uint32]),
     ('IsAlive',        c.c_bool,      None,        [c.c_void_p]),
     ('Kill',           None,          None,        [c.c_void_p]),
-    ('Terminate',      c_error_code,  _errcheck,   [c.c_void_p]),
+    ('Terminate',      c_error_code,  _errcheck,   [c.c_void_p, c.c_uint32]),
     ('DestroyJob',     None,          None,        [c.c_void_p]),
     ('FreeMemory',     None,          None,        [c.c_void_p]),
     ('GetProcessIds',  c_error_code,  _errcheck,   [c.c_void_p, c_uint64_pp, c_size_t_p]),
