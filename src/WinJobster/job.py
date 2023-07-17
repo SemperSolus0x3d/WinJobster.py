@@ -1,3 +1,4 @@
+import ctypes
 import ctypes as c
 import shutil
 import typing
@@ -14,6 +15,7 @@ class Job:
         pass
 
     APP_LOCAL = AppLocal()
+    TIMEOUT_INFINITY = 4294967295
 
     @classmethod
     def _init(cls):
@@ -29,6 +31,7 @@ class Job:
         path: Union[str, Path],
         call_params: str = "",
         working_directory: Union[str, Path, AppLocal, None] = APP_LOCAL,
+        timeout=100,
     ):
         if isinstance(working_directory, Job.AppLocal):
             resolved_path = shutil.which(str(path))
@@ -43,13 +46,11 @@ class Job:
         if working_directory is not None:
             working_directory = str(working_directory)
 
-        self._start_process(cmdline, working_directory)
-
-    def _start_process(self, cmdline: str, working_directory: Optional[str] = None):
         self._library.StartProcess(
+            self._handle,
             cmdline,
             working_directory,
-            self._handle,
+            timeout,
         )
 
     @property
@@ -59,18 +60,17 @@ class Job:
 
         return self._library.IsAlive(self._handle)
 
-    def terminate(self, gracefully=True):
+    def terminate(self, timeout=1000):
         if self._handle is None:
             return
 
-        if gracefully:
-            self._library.Terminate(self._handle)
+        if timeout > 0:
+            self._library.Terminate(self._handle, timeout)
         else:
-            self._library.Kill(self._handle)
+            self.kill()
 
-        # TODO: This part should be moved to CPP library
-        self._cleanup()
-        self._handle = self._library.CreateJob()
+    def kill(self):
+        self._library.Kill(self._handle)
 
     @property
     def process_ids(self) -> typing.Set[int]:

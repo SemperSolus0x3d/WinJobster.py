@@ -14,7 +14,7 @@ def main():
     )
     check_and_download_updates(
         GitHubRepo("SemperSolus0x3d", "WinJobster.cpp", os.environ.get("GITHUB_TOKEN")),
-        SimpleSpec("~2"),
+        SimpleSpec("~3"),
         assets_mask=re.compile(".*\\.dll"),
     )
 

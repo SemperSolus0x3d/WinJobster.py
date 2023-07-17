@@ -65,13 +65,19 @@ class RunStopApp(unittest.TestCase):
         self.assertRaises(CallFailedException, job.start_process, cmdline)
         self.assertFalse(job.is_alive)
 
-    def test_fail_kill(self):
+    def test_fail_terminate(self):
         job = self.job
         self.assertFalse(job.is_alive)
         job.terminate()
         self.assertFalse(job.is_alive)
 
-    # @unittest.skip('Will fix later')  # Dirty-patched, TODO: Fix properly
+    def test_kill(self):
+        job = self.job
+        job.start_process(self.EXISTING_APP_PATH)
+        self.assertTrue(job.is_alive)
+        job.kill()
+        self.assertFalse(job.is_alive)
+
     def test_stop_before_run_and_rerun(self):
         cmdline = self.EXISTING_APP_PATH
         job = self.job
